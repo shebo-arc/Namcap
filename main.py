@@ -1,7 +1,9 @@
 from pyautogui import *
+from PIL import ImageGrab,Image
 import pyautogui
 import keyboard
 import cv2
+import numpy as np
 #import win32api
 #import win32con
 
@@ -21,6 +23,7 @@ while True:
         #look for the board on the screen and store bounding values
         if not game_started:
             board_location = pyautogui.locateOnScreen('board.png',confidence=0.8)
+            left,top,width,height = board_location
 
             if board_location:
                 left_extreme = board_location.left
@@ -28,6 +31,9 @@ while True:
                 print("Board found at: ",board_location)
                 print("Left extreme: ",left_extreme)
                 print("Right extreme: ",right_extreme)
+                screenshot = ImageGrab.grab(left, top, left+width, top+height)
+                screenshot_np = np.array(screenshot)
+                cv2.imshow('Frame',screenshot_np)
                 keyboard.press_and_release('space')
                 break
 

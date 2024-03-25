@@ -2,6 +2,7 @@ import pyautogui
 import keyboard
 import cv2
 import numpy as np
+from PIL import Image
 
 # Flag to check if the game has started
 game_started = False
@@ -15,25 +16,43 @@ while True:
     try:
         # Look for the board on the screen and store bounding values
         if not game_started:
-            board_location = pyautogui.locateOnScreen('board.png', confidence=0.5)
-            if board_location is not None:
-                left, top, width, height = board_location
+            for scale in range(5, 21):
+                # Calculate the scale factor
+                scale_factor = scale / 10.0
 
-                # Store left and right extremes
-                left_extreme = left
-                right_extreme = left + width
+                # Open the image file
+                img = Image.open('board.png')
 
-                print("Board found at:", board_location)
-                print("Left extreme:", left_extreme)
-                print("Right extreme:", right_extreme)
+                # Resize the image
+                width, height = img.size
+                new_width = int(width * scale_factor)
+                new_height = int(height * scale_factor)
+                resized_img = img.resize((new_width, new_height))
 
-                # Simulate a keyboard press (space key)
-                keyboard.press_and_release('space')
+                # Save the resized image temporarily
+                resized_img.save('resized_board.png')
+                region = (0, 0, pyautogui.size()[0], pyautogui.size()[1])  # Full screen region
+                board_location = pyautogui.locateOnScreen('resized_board.png', region=region, confidence=0.5)
+                if board_location is not None:
+                    left, top, width, height = board_location
 
-                # Set game_started to True to exit the loop
-                game_started = True
-            else:
-                print("game not found")
+                    # Store left and right extremes
+                    left_extreme = left
+                    right_extreme = left + width
+
+                    print("Board found at:", board_location)
+                    print("Left extreme:", left_extreme)
+                    print("Right extreme:", right_extreme)
+
+                    # Simulate a keyboard press (space key)
+                    keyboard.press_and_release('space')
+
+                    # Set game_started to True to exit the loop
+                    game_started = True
+                    break
+                else:
+                    print("game not found")
+                resized_img.close()
 
         # Capture screenshot of the board
         else:

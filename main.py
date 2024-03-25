@@ -1,5 +1,6 @@
+from pyautogui import *
 import pyautogui
-from pyautogui import*
+import keyboard
 import cv2
 #import win32api
 #import win32con
@@ -27,6 +28,7 @@ while True:
                 print("Board found at: ",board_location)
                 print("Left extreme: ",left_extreme)
                 print("Right extreme: ",right_extreme)
+                keyboard.press_and_release('space')
                 break
 
     except ImageNotFoundException as e:

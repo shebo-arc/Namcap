@@ -1,46 +1,54 @@
-from pyautogui import *
-from PIL import ImageGrab,Image
 import pyautogui
 import keyboard
 import cv2
 import numpy as np
-#import win32api
-#import win32con
 
-'''
-def click(x,y):
-    win32api.SetCursorPos((x,y))
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0)
-    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0)
-'''
+# Flag to check if the game has started
+game_started = False
 
-game_started= False
-left_extreme= None
-right_extreme= None
+# Variables to store left and right extremes of the board
+left_extreme = None
+right_extreme = None
 
+# Infinite loop to continuously capture and display the screen
 while True:
     try:
-        #look for the board on the screen and store bounding values
+        # Look for the board on the screen and store bounding values
         if not game_started:
-            board_location = pyautogui.locateOnScreen('board.png',confidence=0.8)
-            left,top,width,height = board_location
+            board_location = pyautogui.locateOnScreen('board.png', confidence=0.5)
+            if board_location is not None:
+                left, top, width, height = board_location
 
-            if board_location:
-                left_extreme = board_location.left
-                right_extreme = board_location.left + board_location.width
-                print("Board found at: ",board_location)
-                print("Left extreme: ",left_extreme)
-                print("Right extreme: ",right_extreme)
-                print(f"({left}, {top}, {left+width}, {top+height})")
-                screenshot = ImageGrab.grab(bbox=(left, top, left+width, top+height))
-                screenshot_np = np.array(screenshot)
-                screen_rgb=cv2.cvtColor(screenshot_np,cv2.COLOR_RGB2BGR)
-                print('frame')
-                cv2.imshow('Frame',screen_rgb)
-                cv2.waitKey(0)
+                # Store left and right extremes
+                left_extreme = left
+                right_extreme = left + width
+
+                print("Board found at:", board_location)
+                print("Left extreme:", left_extreme)
+                print("Right extreme:", right_extreme)
+
+                # Simulate a keyboard press (space key)
                 keyboard.press_and_release('space')
-                break
 
+                # Set game_started to True to exit the loop
+                game_started = True
+            else:
+                print("game not found")
 
-    except ImageNotFoundException as e:
-        print("Board not found: ",e)
+        # Capture screenshot of the board
+        else:
+            screenshot = pyautogui.screenshot(region=(left_extreme, top, right_extreme - left_extreme, height))
+            screen_np = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2BGR)
+
+            # Display the board
+            cv2.imshow('Frame', screen_np)
+
+    except pyautogui.ImageNotFoundException as e:
+        print("An error occurred:", e)
+
+    # Press 'q' to exit the loop
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+# Close OpenCV windows
+cv2.destroyAllWindows()

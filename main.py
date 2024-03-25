@@ -31,11 +31,16 @@ while True:
                 print("Board found at: ",board_location)
                 print("Left extreme: ",left_extreme)
                 print("Right extreme: ",right_extreme)
-                screenshot = ImageGrab.grab(left, top, left+width, top+height)
+                print(f"({left}, {top}, {left+width}, {top+height})")
+                screenshot = ImageGrab.grab(bbox=(left, top, left+width, top+height))
                 screenshot_np = np.array(screenshot)
-                cv2.imshow('Frame',screenshot_np)
+                screen_rgb=cv2.cvtColor(screenshot_np,cv2.COLOR_RGB2BGR)
+                print('frame')
+                cv2.imshow('Frame',screen_rgb)
+                cv2.waitKey(0)
                 keyboard.press_and_release('space')
                 break
+
 
     except ImageNotFoundException as e:
         print("Board not found: ",e)

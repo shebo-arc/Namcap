@@ -3,6 +3,7 @@ import keyboard
 import cv2
 import numpy as np
 from PIL import Image
+import win32api, win32con
 
 # Flag to check if the game has started
 game_started = False
@@ -10,6 +11,12 @@ game_started = False
 # Variables to store left and right extremes of the board
 left_extreme = None
 right_extreme = None
+
+
+def click(x, y):
+    win32api.SetCursorPos((int(x), int(y)))
+    # win32api.mouse_event(win32con.)
+
 
 # Infinite loop to continuously capture and display the screen
 while True:
@@ -45,6 +52,7 @@ while True:
                     print("Right extreme:", right_extreme)
 
                     # Simulate a keyboard press (space key)
+
                     keyboard.press_and_release('space')
 
                     # Set game_started to True to exit the loop

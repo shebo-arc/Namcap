@@ -11,6 +11,7 @@ class Pacman(Entity):
         self.name = PACMAN    
         self.color = YELLOW
         self.direction = LEFT
+        self.direc = LEFT
         self.setBetweenNodes(LEFT)
         self.alive = True
         self.sprites = PacmanSprites(self)
@@ -27,9 +28,9 @@ class Pacman(Entity):
         self.alive = False
         self.direction = STOP
 
-    def update(self, dt):	
+    def update(self, dt):
         self.sprites.update(dt)
-        self.position += self.directions[self.direction]*self.speed*dt
+        self.position += self.directions[self.direction] * self.speed * dt
         direction = self.getValidKey()
         if self.overshotTarget():
             self.node = self.target
@@ -44,19 +45,45 @@ class Pacman(Entity):
             if self.target is self.node:
                 self.direction = STOP
             self.setPosition()
-        else: 
+        else:
+            pass
+            # if self.oppositeDirection(direction):
+            #   self.reverseDirection()
+
+    def updateDirection(self, direction):
+        self.direction = direction
+
+    def update_new(self, dt):
+        self.sprites.update(dt)
+        self.position += self.directions[self.direc] * self.speed * dt
+        # direction = self.direc
+        direction = self.getValidKey()
+        if self.overshotTarget():
+            self.node = self.target
+            if self.node.neighbors[PORTAL] is not None:
+                self.node = self.node.neighbors[PORTAL]
+            self.target = self.getNewTarget(direction)
+            if self.target is not self.node:
+                self.direc = direction
+            else:
+                self.target = self.getNewTarget(direction)
+
+            if self.target is self.node:
+                self.direc = STOP
+            self.setPosition()
+        else:
             if self.oppositeDirection(direction):
                 self.reverseDirection()
 
     def getValidKey(self):
         key_pressed = pygame.key.get_pressed()
-        if key_pressed[K_UP]:
+        if key_pressed[K_w]:
             return UP
-        if key_pressed[K_DOWN]:
+        if key_pressed[K_s]:
             return DOWN
-        if key_pressed[K_LEFT]:
+        if key_pressed[K_a]:
             return LEFT
-        if key_pressed[K_RIGHT]:
+        if key_pressed[K_d]:
             return RIGHT
         return STOP  
 

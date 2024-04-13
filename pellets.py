@@ -45,6 +45,7 @@ class PelletGroup(object):
 
     def update(self, dt):
         for powerpellet in self.powerpellets:
+
             powerpellet.update(dt)
                 
     def createPelletList(self, pelletfile):
@@ -57,6 +58,7 @@ class PelletGroup(object):
                     pp = PowerPellet(row, col)
                     self.pelletList.append(pp)
                     self.powerpellets.append(pp)
+        # print(len(self.pelletList))
                     
     def readPelletfile(self, textfile):
         return np.loadtxt(textfile, dtype='<U1')

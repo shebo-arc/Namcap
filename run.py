@@ -15,7 +15,7 @@ from mazedata import MazeData
 
 class GameInformation:
     def __init__(self, pacman_pos, ghosts_pos, lives, score):
-        self.pacman_pos = pacman_pos
+        self.pacman_pos_x = pacman_pos
         self.ghosts_pos = ghosts_pos
         self.lives = lives
         self.score = score
@@ -119,7 +119,7 @@ class GameController(object):
 
 
     def update(self):
-        dt = self.clock.tick(30) / 1000.0
+        dt = self.clock.tick(300) / 1000.0
         self.textgroup.update(dt)
         self.pellets.update(dt)
         if not self.pause.paused:
@@ -167,6 +167,8 @@ class GameController(object):
                             #self.hideEntities()
 
     def checkPelletEvents(self):
+        self.ghosts.clyde.startNode.allowAccess(LEFT, self.ghosts.clyde)
+        self.ghosts.inky.startNode.allowAccess(RIGHT, self.ghosts.inky)
         pellet = self.pacman.eatPellets(self.pellets.pelletList)
         if pellet:
             self.pellets.numEaten += 1

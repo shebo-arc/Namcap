@@ -47,8 +47,8 @@ class Pacman(Entity):
             self.setPosition()
         else:
             pass
-            # if self.oppositeDirection(direction):
-            #   self.reverseDirection()
+            if self.oppositeDirection(direction):
+                self.reverseDirection()
 
     def updateDirection(self, direction):
         self.direction = direction

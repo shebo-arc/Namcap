@@ -149,7 +149,7 @@ class pacman_game:
                 break
 
     def calculate_fitness(self, genome1, genome2, game_info):
-        genome1.fitness += 20
+        genome1.fitness += game_info.score + game_info.time_elapsed / 1000
         genome2.fitness += 0
         print(genome1.fitness)
 

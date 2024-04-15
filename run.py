@@ -19,6 +19,7 @@ class GameInformation:
         self.ghosts_pos = ghosts_pos
         self.lives = lives
         self.score = score
+        self.time_elapsed = pygame.time.get_ticks()
 
 
 class GameController(object):
@@ -296,6 +297,4 @@ if __name__ == "__main__":
     game.startGame()
     while True:
         game.update()
-
-
-
+        # print(pygame.time.get_ticks())

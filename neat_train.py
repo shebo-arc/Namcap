@@ -154,7 +154,11 @@ class pacman_game:
         print(genome1.fitness)
 
     def move_ai(self, net):
-        pass
+        players = [(self.genome1, net, self.left_paddle, True)]
+        for (genome, net, paddle, left) in players:
+            output = net.activate(
+                (paddle.y, abs(paddle.x - self.ball.x), self.ball.y))
+        decision = output.index(max(output))
 
     # def calculate_fitness(self, game_info, duration):
     # self.genome.fitness += game_info.score + duration

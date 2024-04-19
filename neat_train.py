@@ -154,6 +154,7 @@ class pacman_game:
         print(genome1.fitness)
 
     def move_ai(self, net):
+        pass
 
 
 # players = [(self.genome1, net, self.left_paddle, True)]

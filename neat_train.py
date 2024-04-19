@@ -8,6 +8,7 @@ import time
 import pickle
 import keyboard
 import math
+import datetime
 
 
 class pacman_game:
@@ -53,6 +54,9 @@ class pacman_game:
         self.game.startGame()
         # self.pause.setPause(playerPaused=True)
         self.game.pause.setPause(playerPaused=False)
+        time_stamp = None
+        last_position = None  # Store the last position of the agent
+        last_position_time = None
 
         while run:
             dt = self.clock.tick(300) / 1000.0
@@ -68,17 +72,30 @@ class pacman_game:
             pacman_pos = (game_info.pacman_pos_x.x, game_info.pacman_pos_x.y)
             # print(pacman_pos)
             current_position = (game_info.pacman_pos_x.x, game_info.pacman_pos_x.y)
-            last_position = None  # Store the last position of the agent
-            last_position_time = time.time()
+
             if current_position != last_position:
                 last_position = current_position
-                last_position_time = time.time()
+                current_time = datetime.datetime.now()
+                time_string = current_time.strftime("%H%M%S")
+                last_position_time = time_string
+                # print(last_position)
+                # last_position_time = time.time()
+            elif current_position == last_position:
+                current_time = datetime.datetime.now()
+                time_string = current_time.strftime("%H%M%S")
+                if int(time_string) - int(last_position_time) > 1.5:
+                    self.calculate_fitness(genome1, genome2, game_info)
+                    break
 
             for node_pos in self.turning_points:
                 if pacman_pos == node_pos:
                     print("intersection")
+                    # self.move_ai(net1,game_info)
 
                     # print("intersection")
+                    current_time = datetime.datetime.now()
+                    time_string = current_time.strftime("%H%M%S")  # Format as string
+                    print("Current time:", time_string)
                     output1 = net1.activate((game_info.pacman_pos_x.x, game_info.pacman_pos_x.y,
                                              game_info.ghosts_pos[0].x - game_info.pacman_pos_x.x,
                                              game_info.ghosts_pos[0].y - game_info.pacman_pos_x.y,
@@ -105,6 +122,9 @@ class pacman_game:
                         keyboard.release('a')
                         keyboard.release('s')
                         keyboard.release('d')
+                        # new_time = datetime.datetime.now()
+                        # new_time_string = new_time.strftime("%H%M%S")
+                        # time_stamp = new_time_string
                         print("up")
 
                     elif decision == 1:
@@ -133,7 +153,7 @@ class pacman_game:
                 self.pacman.update(dt)
             if current_position != last_position:
                 last_position = current_position
-                last_position_time = time.time()
+                # last_position_time = time.time()
 
             # print(output1,output2)
             # decision = output1.index(max(output1))
@@ -143,8 +163,9 @@ class pacman_game:
             pygame.display.update()
 
             # print(time.time())
+            # Format as string
 
-            if game_info.lives < 5 or time.time() - last_position_time >= 0.5:
+            if game_info.lives < 5:
                 self.calculate_fitness(genome1, genome2, game_info)
                 break
 
@@ -153,7 +174,48 @@ class pacman_game:
         genome2.fitness += 0
         print(genome1.fitness)
 
-    def move_ai(self, net):
+    def move_ai(self, net, game_info):
+        output1 = net.activate((game_info.pacman_pos_x.x, game_info.pacman_pos_x.y,
+                                game_info.ghosts_pos[0].x - game_info.pacman_pos_x.x,
+                                game_info.ghosts_pos[0].y - game_info.pacman_pos_x.y,
+                                game_info.ghosts_pos[1].x - game_info.pacman_pos_x.x,
+                                game_info.ghosts_pos[1].y - game_info.pacman_pos_x.y,
+                                game_info.ghosts_pos[2].x - game_info.pacman_pos_x.x,
+                                game_info.ghosts_pos[2].y - game_info.pacman_pos_x.y,
+                                game_info.ghosts_pos[3].x - game_info.pacman_pos_x.x,
+                                game_info.ghosts_pos[3].y - game_info.pacman_pos_x.y,
+                                game_info.score
+                                ))
+        decision = output1.index(max(output1))
+        if decision == 0:
+            # self.game.pacman.direction = UP
+            keyboard.press('w')
+            keyboard.release('a')
+            keyboard.release('s')
+            keyboard.release('d')
+            print("up")
+
+        elif decision == 1:
+            keyboard.press('s')
+            keyboard.release('d')
+            keyboard.release('a')
+            keyboard.release('w')
+            print("down")
+
+        elif decision == 2:
+            keyboard.press('a')
+            keyboard.release('d')
+            keyboard.release('s')
+            keyboard.release('w')
+            print("left")
+
+        elif decision == 3:
+            keyboard.press('d')
+            keyboard.release('s')
+            keyboard.release('a')
+            keyboard.release('w')
+
+            print("right")
         pass
 
 

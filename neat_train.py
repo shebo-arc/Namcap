@@ -186,14 +186,14 @@ def test_best_network(config):
 
 
 def run_neat(config):
-    # p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-85')
+    # p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-1')
     p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(1))
 
-    winner = p.run(eval_genomes, 1)
+    winner = p.run(eval_genomes, 50)
     print(stats)
     # with open("best.pickle", "wb") as f:
     # pickle.dump(winner, f)

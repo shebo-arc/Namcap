@@ -221,3 +221,5 @@ if __name__ == '__main__':
 
     run_neat(config)
     # test_best_network(config)
+
+print(":((")
